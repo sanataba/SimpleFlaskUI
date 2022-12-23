@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: my-php-app
-        image: 706274417810.dkr.ecr.ap-south-1.amazonaws.com/springboot
+        image: 706274417810.dkr.ecr.ap-south-1.amazonaws.com/springboot:latest
         imagePullPolicy: Always
         ports:
         - containerPort: 5000
