@@ -1,6 +1,6 @@
 pipeline {
-    agent {
-        label 'sana_123'
+      agent {
+        label 'new123'
     }
     environment {
         registry = "sanataba/python" 
@@ -10,7 +10,7 @@ pipeline {
            steps{
                checkout([$class: 'GitSCM', branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[credentialsId: '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', url: 'https://github.com/sanataba/SimpleFlaskUI']]])
            }
-        }
+        } 
         stage('docker build'){
             steps{
                 script{
@@ -42,23 +42,23 @@ pipeline {
                     sh 'docker login -u sanataba -p ${dockerhubpwd}'
                   //  sh 'docker push sanataba/python'
                     dockerImage.push()
-                       }
+}
                     
                 }
             }
-        }
-          
-        stage ('K8S Deploy') {
+        } 
+        
+        stage ('eks Deploy') {
            steps {
-              script {
-                 kubernetesDeploy(
-                    configs: 'k8s-deployment.yaml',
-                    kubeconfigId: 'K8S',
-                    enableConfigSubstitution: true
-                    )           
-               
-            }
+               script{
+                    withKubeConfig([credentialsId: 'K8s']) 
+                    {
+        
+              sh 'kubectl apply -f Deployment.yaml'
         }
-    }
+        }
+    
       }
+}
+}
 }
