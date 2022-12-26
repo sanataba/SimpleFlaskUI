@@ -2,8 +2,11 @@ pipeline {
       agent {
         label 'new123'
     }
-    environment {
+ /*   environment {
         registry = "sanataba/python" 
+    } */
+      environment {
+        registry = "706274417810.dkr.ecr.ap-south-1.amazonaws.com/python"
     }
       stages{
         stage('git checkout'){
@@ -14,9 +17,12 @@ pipeline {
         stage('docker build'){
             steps{
                 script{
-                    img = registry + ":${env.BUILD_ID}"
+               /*     img = registry + ":${env.BUILD_ID}"
                     println ("${img}")
-                    dockerImage = docker.build("${img}")
+                    dockerImage = docker.build("${img}") */
+                   sh 'docker build -t python .'
+                   sh 'docker tag python:latest 706274417810.dkr.ecr.ap-south-1.amazonaws.com/python:latest'
+                    
                 }
             }
         }
@@ -32,10 +38,10 @@ pipeline {
         stage('Test - Run Docker Container on Jenkins node') {
            steps {
 
-                sh label: '', script: "docker run -d --name ${JOB_NAME} -p 5000:5000 ${img}"
+                sh label: '', script: "docker run -d --name sana -p 5000:5000 python:latest"
           }
-        }
-        stage('push docker image'){
+        } 
+   /*     stage('push docker image'){
             steps{
                 script{
                     withCredentials([string(credentialsId: 'dockerhubpwd', variable: 'dockerhubpwd')]) {
@@ -45,6 +51,17 @@ pipeline {
 }
                     
                 }
+            }
+        } */
+        
+        stage('aws login'){
+            steps{
+              sh 'aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 706274417810.dkr.ecr.ap-south-1.amazonaws.com'
+          }
+      } 
+             stage('DockerPush to AWS ECR'){
+            steps{
+                sh 'docker push 706274417810.dkr.ecr.ap-south-1.amazonaws.com/python:latest'
             }
         } 
         
