@@ -30,7 +30,6 @@ spec:
   selector:
     app: php-app
   ports:
-    ports:
   - name: http
     port: 5000
     protocol: TCP
