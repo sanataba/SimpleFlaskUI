@@ -29,6 +29,6 @@ spec:
     app: php-app
   ports:
     - nodePort: 30163
-      port: 8080
+      port: 5000
       targetPort: 80
   type: NodePort
