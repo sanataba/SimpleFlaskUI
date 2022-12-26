@@ -28,7 +28,11 @@ spec:
   selector:
     app: php-app
   ports:
-    - nodePort: 30163
-      port: 5000
-      targetPort: 80
-  type: NodePort
+    ports:
+  - name: http
+    port: 5000
+    protocol: TCP
+    targetPort: 5000
+  type: LoadBalancer
+  selector:
+    app: php-app
